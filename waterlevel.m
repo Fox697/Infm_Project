@@ -1,4 +1,4 @@
-waterlevel [water] = untitled3()
+function [water] = waterlevel()
 % misst den Wasserstand im Behälter
 % 
 
