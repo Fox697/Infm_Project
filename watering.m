@@ -1,4 +1,4 @@
-function [] = watering(humidity_limit)
+function [] = watering(humidity_limit,water_time)
 % Function für das Bewässern
 % Version 0.1
 % Test cases:
@@ -10,7 +10,7 @@ function [] = watering(humidity_limit)
 moisture=0;
 while(moisture<humidity_limit)
     writeDigitalPin(arduinoObj, "A0",1);
-    pause(5);
+    pause(water_time);
     writeDigitalPin(arduinoObj, "A0",0)
     pause(60);
     moisture=humidity();
