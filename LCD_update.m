@@ -1,6 +1,10 @@
-function [] = LCD_update(inputArg1,inputArg2)
-%Function zum Update des LCD_Screen 
-%   
+function [] = LCD_update()
+% Function zum Update des LCD_Screen 
+% Version 0.1
+% Test-Cases:
+
+
+
 
 end
 
