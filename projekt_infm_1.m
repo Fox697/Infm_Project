@@ -4,22 +4,25 @@
 % Ryan Meyer
 % Version 0.1
 
+% Das Programm überwacht die Feuchtigkeit und die Sonnenstunden einer
+% Pflanze. Bei zu geringer Feuchtigkeit in der Erde wird eine automatische
+% Bewässerung gestartet. Parallel werden die Sonnenstunden gezählt. Wird es
+% zu dunkel und die voreingestellten Stunden sind noch nicht erreicht, wird
+% eine Lampe aktiviert. Nach jeweils 24h wird der Arduino zurückgesetzt.
+
 
 %Benutzerparameter
 humidity_limit = 30;      %Grenzwert für die Feuchtigkeit, Wert 0-100
-water_limit =               % Grenzwert für Wasserpegel
-light_limit =               % Grenzwert für Lichtintensität
-time_limit_h = 12;          % Grenzwert für Sonnenstunden
-
-
-
-
+reservoir_height =               % Grenzwert für Wasserpegel
+light_limit = 8;              % Grenzwert für Lichtintensität
+time_limit_h = 12;          % Grenzwert für Sonnenstunden in Stunden
+water_time = 5;               %Zeitdauer eines "Giess-Intervalls" in Sekunden
 
 
 
 % Aschlüsse: 
 % Input: A0 = Feuchtigkeitssensor, A1 = Lichtsensor, D6 = Ultraschall
-% Output: I2C = LCD, D5 = Ventil
+% Output: I2C = LCD, D5 = Ventil, D2 Ausgang für Reset
 
 % Variablen
 time=0;         % timestamp zum Speichern der Laufzeit
@@ -33,35 +36,32 @@ arduinoObj = arduino("COM7", "Leonardo")
 configurePin(arduinoObj, "A0", "AnalogInput");
 configurePin(arduinoObj, "A1", "AnalogInput");
 configurePin(arduinoObj, "D6", "PWM");
+onfigurePin(arduinoObj, "D2", "DigitalOutput");
 
-%A0_Humidity = readVoltage(arduinoObj, "A0");
-%A1_Light = readVoltage(arduinoObj, "A1");
+% Umrechnung der Benutzerparameter
+time_limit = time_limit_h*60*60*1000;       % Umrechnung von Stunden in millisekunden 
+water_limit_1 = reservoir_height*0.5;       % erster Grenzwert für 50% Füllstand
+water_limit_2 = reservoir_height*0.05;       % zweiter Grenzwert für 5% Füllstand
 
-time_limit = time_limit_h*60*60*1000;       %umrechnung von Stunden in millisekunden 
 
 while (1)                        % Main-loop
-    while(time<=(24*60*60*1000))      % wird nach 24h zurückgesetzt
-        water=waterlevel;       % Auftruf der Wasserstand-Mess-Function
-        if water <  % 5%            % Wenn Wasserstand <5% LCD updaten und nicht giessen
+    while(time<=(24*60*60))      % wird nach 24h zurückgesetzt
+        water=waterlevel();       % Auftruf der Wasserstand-Mess-Function
+        if water < water_limit_2            % Wenn Wasserstand <5% LCD updaten und nicht giessen
             %screen update
 
-        elseif water>= %50%         % Wenn Wasserstand >=50% Feuchtigkeit messen
+        elseif water>=water_limit_1         % Wenn Wasserstand >=50% Feuchtigkeit messen
             moisture=humidity();
-            %watering
+            watering(humidity_limit,water_time);
             
         else                        % Ansonsten LCD updaten und Feuchtigkeit messen
             %screen update
-            moisture=humidity();
+            watering(humidity_limit,water_time);
         end
 
-        if moisture<=humidity_limit     % Wenn die gemessene Feuchtigkeit den Grenzwert unterschreitet -> giessen
-            %watering
-            moisture=100;               % Feuchtigkeitg auf 100 setzen um ungewolltes giessen zu verhindern
-        end
-
-        if light=0                       %überprüft Lichtintensität
+        if light==0                       %überprüft Lichtintensität
             brightness=light_intensity;
-            if brightness<light_limit       % betritt die Bedingung wenn die Lichtintensität zu gering ist
+            if brightness<light_limit || light==1       % betritt die Bedingung wenn die Lichtintensität zu gering ist
                 if time<time_limit
                     light=1;                % Licht ein und Merker setzen
                     writeDigitalPin(arduinoObj, "A0",1);
@@ -69,14 +69,13 @@ while (1)                        % Main-loop
                     light=0;
                     writeDigitalPin(arduinoObj, "A0",0);
                 end
-
-    
-
-
-
-
-
-
+            end
+        end
+        
+        pause(3600);
+        time=temporalCount(sec);
+        %screen update
+       
     end
-    time=0;
+    writeDigitalPin(arduinoObj, "D2",1);        % D2 auf "reset" Pin verbinden, reseted den Arduino nach einem Tag
 end
