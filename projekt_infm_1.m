@@ -12,7 +12,8 @@
 
 
 %Benutzerparameter
-humidity_limit = 30;      % Grenzwert für die Feuchtigkeit, Wert 0-100
+humidity_lower_limit = 30;      % unterer Grenzwert für die Feuchtigkeit, Wert 0-100
+humidtiy_upper_limit = 50;      % oberer Grentwert für die Feuchtigkeit
 reservoir_height = 0.5;   % Höhe von Behälter (in Meter)
 light_limit = 8;          % Grenzwert für Lichtintensität
 time_limit_h = 12;        % Grenzwert für Sonnenstunden in Stunden
@@ -53,11 +54,11 @@ while (1)                        % Main-loop
 
         elseif water>=water_limit_1         % Wenn Wasserstand >=50% Feuchtigkeit messen
             moisture=humidity(arduinoObj);
-            watering(humidity_limit,water_time);
+            watering(humidity_lower_limit,water_time);
             
         else                        % Ansonsten LCD updaten und Feuchtigkeit messen
             LCD_update(reservoir_height,water,moisture,light_time,arduinoObj);
-            watering(humidity_limit,water_time,arduinoObj);
+            watering(humidity_lower_limit,water_time,arduinoObj);
         end
 
         if light==0                       %überprüft Lichtintensität
