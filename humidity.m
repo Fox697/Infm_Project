@@ -4,5 +4,6 @@ function [humidity] = humidity()
 % Test-cases: 
 
 voltage = readVoltage(arduinoObj, "A0");
-humidity=voltage/3.2*100;
+humidity=round(voltage/3.2*100,0);
+
 end
