@@ -12,6 +12,7 @@
 
 
 %Benutzerparameter
+%{
 humidity_lower_limit = 30;      % unterer Grenzwert für die Feuchtigkeit, Wert 0-100
 humidtiy_upper_limit = 50;      % oberer Grentwert für die Feuchtigkeit
 reservoir_height = 0.5;   % Höhe von Behälter (in Meter)
@@ -19,14 +20,23 @@ light_limit = 8;          % Grenzwert für Lichtintensität
 time_limit_h = 12;        % Grenzwert für Sonnenstunden in Stunden
 water_time = 5;           % Zeitdauer eines "Giess-Intervalls" in Sekunden
 
+%}
 % GUI-Parameter
-humidity_lower_limit = 30;     
-humidtiy_upper_limit = 50;      
-reservoir_height = 0.5;   
-light_limit = 8;          
-time_limit_h = 12;        
-water_time = 5;           
+humidity_lower_limit = app.untererGrenzwertistEditField.Value;     
+humidity_upper_limit = app.obererGrenzwertistEditField.Value;      
+reservoir_height = app.BehlterhoeheEditField.Value;   
+light_limit = app.DmmerungEditField.Value;          
+time_limit_h = app.tglicheSonnenstundenistEditField.Value;        
+water_time = app.ZeitdauerBewaesserungEditField.Value; 
+% Debugging;
+disp("humidity lower limit: "+humidity_lower_limit);
+disp("humidity upper limit: "+humidity_upper_limit);
+disp("reservoir height: "+reservoir_height);
+disp("light limit: "+light_limit);
+disp("time limit: "+time_limit_h);
+disp("water time: "+water_time);
 
+%{
 
 % Aschlüsse: 
 % Input: A0 = Feuchtigkeitssensor, A1 = Lichtsensor, D6 = Ultraschall
@@ -88,3 +98,4 @@ while (1)                        % Main-loop
     end
     writeDigitalPin(arduinoObj, "D2",1);        % D2 auf "reset" Pin verbinden, reseted den Arduino nach einem Tag
 end
+%}
