@@ -19,6 +19,13 @@ light_limit = 8;          % Grenzwert für Lichtintensität
 time_limit_h = 12;        % Grenzwert für Sonnenstunden in Stunden
 water_time = 5;           % Zeitdauer eines "Giess-Intervalls" in Sekunden
 
+% GUI-Parameter
+humidity_lower_limit = 30;     
+humidtiy_upper_limit = 50;      
+reservoir_height = 0.5;   
+light_limit = 8;          
+time_limit_h = 12;        
+water_time = 5;           
 
 
 % Aschlüsse: 
@@ -54,11 +61,11 @@ while (1)                        % Main-loop
 
         elseif water>=water_limit_1         % Wenn Wasserstand >=50% Feuchtigkeit messen
             moisture=humidity(arduinoObj);
-            watering(humidity_lower_limit,water_time);
+            watering(humidity_upper_limit,water_time);
             
         else                        % Ansonsten LCD updaten und Feuchtigkeit messen
             LCD_update(reservoir_height,water,moisture,light_time,arduinoObj);
-            watering(humidity_lower_limit,water_time,arduinoObj);
+            watering(humidity_upper_limit,water_time,arduinoObj);
         end
 
         if light==0                       %überprüft Lichtintensität
