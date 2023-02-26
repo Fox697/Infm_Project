@@ -5,6 +5,7 @@ function [humidity] = humidity()
 
 % Debugging 
 disp("Humidity geöffnet");
+humidity=50;
 
 %voltage = readVoltage(arduinoObj, "A0");
 %humidity=round(voltage/3.2*100,0);

@@ -1,10 +1,12 @@
-function [brightness] = light_intensity()
+function [brightness, run_time] = light_intensity(run_time)
 % misst die Lichtintensität
 % Version 0.1
 % Test-Parameter:
 
 % Debugging
 disp("light_intensity geöffnet");
+brightness = 50;
+run_time=run_time+5;
 
 %{
 while valid==0

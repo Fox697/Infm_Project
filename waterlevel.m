@@ -9,6 +9,7 @@ function [water] = waterlevel(resevior_height)
 
 disp("waterlevel geöffnet");
 water = 1;
+disp(water);
 
 %distance=readDistance(ultrasonicObj);
 %water=resevior_height-distance;
