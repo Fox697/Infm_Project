@@ -36,8 +36,6 @@ disp("light limit: "+light_limit);
 disp("time limit: "+time_limit_h);
 disp("water time: "+water_time);
 
-%{
-
 % Aschlüsse: 
 % Input: A0 = Feuchtigkeitssensor, A1 = Lichtsensor, D6 = Ultraschall
 % Output: I2C = LCD, D5 = Ventil, D2 Ausgang für Reset
@@ -64,7 +62,7 @@ water_limit_2 = reservoir_height*0.05; % zweiter Grenzwert für 5% Füllstand
 
 
 while (1)                        % Main-loop
-    while(run_time<=(24*60*60))      % wird nach 24h zurückgesetzt
+    %while(run_time<=(24*60*60))      % wird nach 24h zurückgesetzt
         water=waterlevel(arduinoObj);       % Auftruf der Wasserstand-Mess-Function
         if water < water_limit_2            % Wenn Wasserstand <5% LCD updaten und nicht giessen
             LCD_update(reservoir_height,water,moisture,light_time,arduinoObj);
@@ -95,7 +93,6 @@ while (1)                        % Main-loop
         run_time=temporalCount(sec);
         LCD_update(reservoir_height,water,moisture,light_time,arduinoObj);
        
-    end
-    writeDigitalPin(arduinoObj, "D2",1);        % D2 auf "reset" Pin verbinden, reseted den Arduino nach einem Tag
+    %end
+    %writeDigitalPin(arduinoObj, "D2",1);        % D2 auf "reset" Pin verbinden, reseted den Arduino nach einem Tag
 end
-%}
