@@ -9,19 +9,18 @@ function [run_time] = watering(humidity_upper_limit,water_time,run_time)
 % erreicht wurde
 
 % Debugging
+% disp("watering geöffnet");
+% run_time=run_time+120;
 
-disp("watering geöffnet");
-run_time=run_time+120;
-
-% moisture=0;
-% while(moisture<humidity_upper_limit)
-%     writeDigitalPin(arduinoObj, "A0",1);
-%     pause(water_time);
-%     writeDigitalPin(arduinoObj, "A0",0)
-%     pause(60);
-%     moisture=humidity();
-%     run_time=run_time+60;
-% end
+moisture=0;
+while(moisture<humidity_upper_limit)
+    writeDigitalPin(arduinoObj, "A0",1);
+    pause(water_time);
+    writeDigitalPin(arduinoObj, "A0",0)
+    pause(60);
+    moisture=humidity();
+    run_time=run_time+60;
+end
 
 end
 

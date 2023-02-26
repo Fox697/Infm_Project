@@ -6,12 +6,11 @@ function [water] = waterlevel(resevior_height)
 %Misst die Distanz zum Wasserspiegel & gibt höhe vom Wasser aus
 
 % Debugging
+% disp("waterlevel geöffnet");
+% water = 1;
+% disp(water);
 
-disp("waterlevel geöffnet");
-water = 1;
-disp(water);
-
-%distance=readDistance(ultrasonicObj);
-%water=resevior_height-distance;
+distance=readDistance(ultrasonicObj);
+water=resevior_height-distance;
 
 end

@@ -52,12 +52,12 @@ brightness=0;       % enthält die gemessene Lichtintensität
 water=0;          % enhält Wasserstand
 
 % Anschlüsse definieren
-arduinoObj = 1;
-%arduinoObj = arduino("COM7", "Leonardo");
-%configurePin(arduinoObj, "A0", "AnalogInput");
-%configurePin(arduinoObj, "A1", "AnalogInput");
-%configurePin(arduinoObj, "D6", "PWM");
-%configurePin(arduinoObj, "D2", "DigitalOutput");
+%arduinoObj = 1;
+arduinoObj = arduino("COM7", "Leonardo");
+configurePin(arduinoObj, "A0", "AnalogInput");
+configurePin(arduinoObj, "A1", "AnalogInput");
+configurePin(arduinoObj, "D6", "PWM");
+configurePin(arduinoObj, "D2", "DigitalOutput");
 
 % Umrechnung der Benutzerparameter
 time_limit = time_limit_h*60*60;       % Umrechnung von Stunden in Sekunden 
