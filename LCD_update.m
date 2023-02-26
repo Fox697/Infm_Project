@@ -12,6 +12,10 @@ function [] = LCD_update(reservoir_height,water,moisture,light_time,arduinoObj)
 % light_time=7200;
 % arduinoObj=arduino();
 
+% Debugging
+disp("LCD update geöffnet");
+
+%{
 %Füllstand in % berechnen und als String
 str_filling=num2str(round(water/reservoir_height*100,0))+"%";
 
@@ -65,6 +69,6 @@ setCursorLCD(LCD_Screen,2,14)
 writeLCD(LCD_Screen,convertStringsToChars(str_light))
 
 clear LCD_Screen
-
+%}
 end
 

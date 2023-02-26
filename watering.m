@@ -7,14 +7,19 @@ function [] = watering(humidity_upper_limit,water_time)
 % liegt, bewässert 5 Sekunden, wartet 60 um das Wasser zu verteilen, 
 % führt eine erneute Messung durch und wiederholt das bis der Grenzwert
 % erreicht wurde
-moisture=0;
-while(moisture<humidity_upper_limit)
-    writeDigitalPin(arduinoObj, "A0",1);
-    pause(water_time);
-    writeDigitalPin(arduinoObj, "A0",0)
-    pause(60);
-    moisture=humidity();
-end
+
+% Debugging
+
+disp("watering geöffnet");
+
+% moisture=0;
+% while(moisture<humidity_upper_limit)
+%     writeDigitalPin(arduinoObj, "A0",1);
+%     pause(water_time);
+%     writeDigitalPin(arduinoObj, "A0",0)
+%     pause(60);
+%     moisture=humidity();
+% end
 
 end
 

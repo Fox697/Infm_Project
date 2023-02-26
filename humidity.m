@@ -3,7 +3,10 @@ function [humidity] = humidity()
 % Version: 0.1
 % Test-cases: 
 
-voltage = readVoltage(arduinoObj, "A0");
-humidity=round(voltage/3.2*100,0);
+% Debugging
+disp("Humidity geöffnet");
+
+%voltage = readVoltage(arduinoObj, "A0");
+%humidity=round(voltage/3.2*100,0);
 
 end

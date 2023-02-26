@@ -3,6 +3,10 @@ function [brightness] = light_intensity()
 % Version 0.1
 % Test-Parameter:
 
+% Debugging
+disp("light_intensity geöffnet");
+
+%{
 while valid==0
     valid=1;            % Bedingung zum verlassen des Loops setzen
     for i=1, i<=6, i++
@@ -21,5 +25,7 @@ while valid==0
 end
 
 brightness=referenz/3.75*100;       % Umrechnen in Prozent
+
+%}
 end
 
