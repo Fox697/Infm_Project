@@ -4,16 +4,17 @@ function [brightness, run_time] = light_intensity(run_time)
 % Test-Parameter:
 
 % Debugging
-disp("light_intensity geöffnet");
-brightness = 50;
-run_time=run_time+5;
+%disp("light_intensity geöffnet");
+%brightness = 50;
+%run_time=run_time+5;
 
-%{
+
 while valid==0
     valid=1;            % Bedingung zum verlassen des Loops setzen
     for i=1, i<=6, i++
         voltage[i,1] = readVoltage(arduinoObj, "A1");       %Sensor auslesen und in Matrix speichern
         pause(10);      % Delay
+        run_time=run_time+10;
     end
 
     i=1;
@@ -28,6 +29,6 @@ end
 
 brightness=referenz/3.75*100;       % Umrechnen in Prozent
 
-%}
+
 end
 
