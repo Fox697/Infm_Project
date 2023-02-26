@@ -1,4 +1,4 @@
-function [humidity] = humidity()
+function [humidity] = humidity(arduinoObj)
 % misst die Feuchtigkeit in der Erde
 % Version: 0.1
 % Test-cases: 
@@ -9,5 +9,8 @@ function [humidity] = humidity()
 
 voltage = readVoltage(arduinoObj, "A0");
 humidity=round(voltage/3.2*100,0);
+if humidity > 100
+humidity = 100;
+end
 
 end

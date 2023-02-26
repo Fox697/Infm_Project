@@ -15,7 +15,7 @@
 
 humidity_lower_limit = 30;      % unterer Grenzwert für die Feuchtigkeit, Wert 0-100
 humiditiy_upper_limit = 50;      % oberer Grentwert für die Feuchtigkeit
-reservoir_height = 2;   % Höhe von Behälter (in Meter)
+reservoir_height = 5;   % Höhe von Behälter (in Meter)
 light_limit = 8;          % Grenzwert für Lichtintensität
 time_limit_h = 0.05;        % Grenzwert für Sonnenstunden in Stunden
 water_time = 5;           % Zeitdauer eines "Giess-Intervalls" in Sekunden
@@ -41,7 +41,7 @@ time_delay = 5;
 
 % Aschlüsse: 
 % Input: A0 = Feuchtigkeitssensor, A1 = Lichtsensor, D6 = Ultraschall
-% Output: I2C = LCD, D5 = Ventil, D2 Ausgang für Reset
+% Output: I2C = LCD, D5 = Ventil, D4 = Licht
 
 % Variablen
 run_time=0;         % timestamp zum Speichern der Laufzeit
@@ -56,8 +56,11 @@ water=0;          % enhält Wasserstand
 arduinoObj = arduino("COM7", "Leonardo");
 configurePin(arduinoObj, "A0", "AnalogInput");
 configurePin(arduinoObj, "A1", "AnalogInput");
-configurePin(arduinoObj, "D6", "PWM");
-configurePin(arduinoObj, "D2", "DigitalOutput");
+%configurePin(arduinoObj, "D6", "PWM");
+configurePin(arduinoObj, "D4", "DigitalOutput");
+configurePin(arduinoObj,"D5","DigitalOutput");
+
+writeDigitalPin(arduinoObj, "D4",0);
 
 % Umrechnung der Benutzerparameter
 time_limit = time_limit_h*60*60;       % Umrechnung von Stunden in Sekunden 
@@ -70,36 +73,36 @@ disp("water limit 2: "+water_limit_2);
 while (1)                        % Main-loop
     disp("Main loop geöffnet");
     %while(run_time<=(24*60*60))      % wird nach 24h zurückgesetzt
-        water=waterlevel(arduinoObj);       % Auftruf der Wasserstand-Mess-Function
+        water=waterlevel(arduinoObj,reservoir_height);       % Auftruf der Wasserstand-Mess-Function
         if water < water_limit_2            % Wenn Wasserstand <5% LCD updaten und nicht giessen
             LCD_update(reservoir_height,water,moisture,light_time,arduinoObj);
 
         elseif water>=water_limit_1         % Wenn Wasserstand >=50% Feuchtigkeit messen
-            moisture=humidity();
+            moisture=humidity(arduinoObj);
             if moisture <= humidity_lower_limit     % Wenn Feuchtigkeit unter dem unteren Grentwert liegt Bewässern
-                run_time=watering(humiditiy_upper_limit,water_time,run_time);
+                run_time=watering(arduinoObj,humiditiy_upper_limit,water_time,run_time);
             end
             
         else                        % Ansonsten LCD updaten und Feuchtigkeit messen
-            moisture=humidity();
+            moisture=humidity(arduinoObj);
             if moisture <= humidity_lower_limit     % Wenn Feuchtigkeit unter dem unteren Grentwert liegt Bewässern
-                run_time=watering(humiditiy_upper_limit,water_time,run_time);
+                run_time=watering(arduinoObj,humiditiy_upper_limit,water_time,run_time);
             end
             LCD_update(reservoir_height,water,moisture,light_time,arduinoObj);
         end
 
         if light==0                       %überprüft Lichtintensität wenn die Lampe aus ist
-            [brightness, run_time]=light_intensity(run_time);
+            [brightness, run_time]=light_intensity(arduinoObj,run_time);
             if brightness<light_limit && run_time<time_limit     % betritt die Bedingung wenn die Lichtintensität zu gering ist
                   light=1;                % Licht ein und Merker setzen
-                  writeDigitalPin(arduinoObj, "A0",1);
+                  writeDigitalPin(arduinoObj, "D4",1);
                   disp("Lampe ein");
             end
         end
 
          if light==1 && run_time>time_limit
              light=0;                % Licht aus und Merker setzen
-                  writeDigitalPin(arduinoObj, "A0",0);
+                  writeDigitalPin(arduinoObj, "D4",0);
                   disp("Lampe aus");
         end
         

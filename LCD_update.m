@@ -53,7 +53,7 @@ str_moisture=num2str(moisture)+"%";
 %Objekte LCD-Screen definieren
 LCD_Screen=groveLCD(arduinoObj);
 switchON(LCD_Screen);
-clearLCD(LCD_Screen);
+%clearLCD(LCD_Screen);
 
 %Schreiben auf erste Linie (Titel)
 homeLCD(LCD_Screen);

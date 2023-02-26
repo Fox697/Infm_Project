@@ -1,4 +1,4 @@
-function [water] = waterlevel(resevior_height)
+function [water] = waterlevel(arduinoObj,resevior_height)
 % misst den Wasserstand im Behälter
 % Version 0.1
 % Test-Cases:
@@ -10,6 +10,7 @@ function [water] = waterlevel(resevior_height)
 % water = 1;
 % disp(water);
 
+ultrasonicObj=ultrasonic(arduinoObj,"D6");
 distance=readDistance(ultrasonicObj);
 water=resevior_height-distance;
 

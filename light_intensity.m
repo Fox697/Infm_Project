@@ -1,4 +1,4 @@
-function [brightness, run_time] = light_intensity(run_time)
+function [brightness, run_time] = light_intensity(arduinoObj,run_time)
 % misst die Lichtintensität
 % Version 0.1
 % Test-Parameter:
@@ -8,26 +8,37 @@ function [brightness, run_time] = light_intensity(run_time)
 %brightness = 50;
 %run_time=run_time+5;
 
-
+valid=0;
 while valid==0
-    valid=1;            % Bedingung zum verlassen des Loops setzen
-    for i=1, i<=6, i++
-        voltage[i,1] = readVoltage(arduinoObj, "A1");       %Sensor auslesen und in Matrix speichern
-        pause(10);      % Delay
+    % Bedingung zum verlassen des Loops setzen
+    valid=1;
+i=1;
+    while i<=6
+        %Sensor auslesen und in Matrix speichern
+        voltage(i,1) = readVoltage(arduinoObj, "A1");
+        %pause(10);
         run_time=run_time+10;
+        i=i+1;
     end
 
     i=1;
-    referenz=voltage(6,1)           % Referenzspannung bestimmen
-    for i=1, i<6, i++
-        diff=abs(referenz-voltage(i,1));        % Alle gemessenen Spannungen mit der Referenz vergleichen
-        if diff>0.3             % wenn eine Spannung zu stark abweicht wird die Messung wiederholt
+    % Referenzspannung bestimmen
+    referenz=voltage(6,1);
+    while i<=6
+        % Alle gemessenen Spannungen mit der Referenz vergleichen
+        diff=abs(referenz-voltage(i,1));
+        if diff>0.1
+            % wenn eine Spannung zu stark abweicht wird die Messung wiederholt
             valid=0;
         end
+        i=i+1;
     end
+    i=1;
 end
 
-brightness=referenz/3.75*100;       % Umrechnen in Prozent
+% Umrechnen in Prozent
+brightness=referenz/3.75*100;
+
 
 
 end

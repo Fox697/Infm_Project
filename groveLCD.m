@@ -3,7 +3,7 @@ classdef groveLCD
     % Aufruf: groveLCD(Arduino_Instanz)
     %         z.B.:   Arduino_Instanz = arduino();
     %
-    % Autor:  Norbert Hofmann, 13.7.2021, 
+    % Autor:  Norbert Hofmann, 4.2023 
     %         Fachhochschule Nordwestschweiz (FHNW), Institut ITFE
     %
     % Zweck:  Grove-LCD RGB Backlight 4.0 ansteuern mit Text in 2 Zeilen und
@@ -90,6 +90,7 @@ classdef groveLCD
             displayfunction {mustBeNumeric}
             displaycontrol  {mustBeNumeric}
             displaymode     {mustBeNumeric}
+%CHN230104            EinMalObject = 0; % Funktioniert nicht
             
             arduinoInstanz % ?
         end
@@ -99,16 +100,20 @@ classdef groveLCD
         methods % Konstruktor und Testabfragen
             %% Constructor
             function obj = groveLCD(arduinoOBJ)
-                fprintf('\n\n DEN ANSCHLUSS D2 oder D3 NICHT VERWENDEN, anstonst läuft der LCD NICHT! \n \n');
-                
+                fprintf('\n\n DEN ANSCHLUSS D2 oder D3 NICHT VERWENDEN, ansonsten läuft der LCD NICHT! \n \n');
+%CHN230104                obj.EinMalObject = obj.EinMalObject+1;   % Es darf nur ein LCD-Objekt erzeugt werden
+
                 if nargin == 0
                     disp(' Keine Arduino Object übergeben!'); disp('Aufruf groveLCD(arduinoOBJ)');
                 elseif isempty(arduinoOBJ)
                     disp(' Arduino Object ist leer!');        disp('Aufruf groveLCD(arduinoOBJ)');
-                elseif ~strcmp(arduinoOBJ.Libraries{1},'I2C') % Achtung: Könnte auch an Pos 2 stehen
-                   disp(' Arduino hat kein I2C Interface;');
+                elseif isempty(arduinoOBJ.Libraries{1})  % Achtung: Könnte auch an Pos 2 stehen
+                    disp(' Arduino hat kein I2C Interface;');
+%CHN230104                elseif obj.EinMalObject >= 2
+%CHN230104                    disp('Es darf nur ein LCD-Objekt erzeugt werden')
+%CHN230104                    return;
                 else
-                    % I2C Bus lesen
+                    % I2C Bus lesen (Hinweis: Anpassung mit fixer Adresse bei mehr als einem I2C-Device
                     I2CBusAdresse = scanI2CBus(arduinoOBJ,0);
 
                     %% Device LCD und Licht Adressieren bestimmen und belegen
@@ -155,10 +160,10 @@ classdef groveLCD
                 %% Hintergrundbeleuchtung einstellen
                 setRegLCD(obj, obj.REG_MODE1, 0);
                 %set LEDs controllable by both PWM and GRPPWM registers
-                setRegLCD(obj, obj.REG_OUTPUT, uint8(hex2dec('0xFF')));
+                setRegLCD(obj, obj.REG_OUTPUT, hex2dec('0xFF'));
                 % set MODE2 values
                 % 0010 0000 -> 0x20  (DMBLNK to 1, ie blinky mode)
-                setRegLCD(obj, obj.REG_MODE2, uint8(hex2dec('0x20')));
+                setRegLCD(obj, obj.REG_MODE2, hex2dec('0x20'));
                 % LCD aus Weiss einstellen
                 setRGBLCD(obj, 100,100,100);
 
@@ -173,7 +178,7 @@ classdef groveLCD
     methods % Funktionsaufrufe
         % Befehlskommandos LCD absetzen
         function commandLCD(obj,DecBefehl)
-            write(obj.dev1LCD,[uint8(hex2dec('0x80')),DecBefehl]);
+            write(obj.dev1LCD,[hex2dec('0x80'),DecBefehl]);
         end % Ende commandLCD
 
         function i2c_send_byteLCD(obj,CharBefehl)
@@ -182,7 +187,7 @@ classdef groveLCD
  
         % Schreiben auf das LCD-Display
         function writeLCD(obj,CharBefehl) % Alternative Command Befehl
-            write(obj.dev1LCD,[uint8(hex2dec('0x40')),CharBefehl]);
+           write(obj.dev1LCD,[hex2dec('0x40'),CharBefehl]);
         end % Ende writeLCD
 
         % Display initialisieren und einschalten
@@ -208,9 +213,9 @@ classdef groveLCD
 
         function setCursorLCD(obj, row,col) 
             if row==1 % Achtung kann auch "0" sein
-               col = bitor(col-1,uint8(hex2dec('0x80')));
+               col = bitor(col-1,hex2dec('0x80'));
             else
-               col = bitor(col-1,uint8(hex2dec('0xc0')));
+               col = bitor(col-1,hex2dec('0xc0'));
             end
             i2c_send_byteLCD(obj,col);
         end % Ende setCursorLCD
@@ -228,14 +233,14 @@ classdef groveLCD
 
         function blinkLCD(obj)
             % blink period in seconds = (<reg 7> + 1) / 24, on/off ratio = <reg 6> / 256
-            setRegLCD(obj, uint8(hex2dec('0x07')), uint8(hex2dec('0x17')));  % blink every second
-            setRegLCD(obj, uint8(hex2dec('0x06')), uint8(hex2dec('0x7f')));  % half on, half off
+            setRegLCD(obj, hex2dec('0x07'), hex2dec('0x17'));  % blink every second
+            setRegLCD(obj, hex2dec('0x06'), hex2dec('0x7f'));  % half on, half off
         end % Ende blinkLCD
 
         function noblinkLCD(obj)
             % End Blinking
-            setRegLCD(obj, uint8(hex2dec('0x07')), uint8(hex2dec('0x00')));  
-            setRegLCD(obj, uint8(hex2dec('0x06')), uint8(hex2dec('0xff')));  
+            setRegLCD(obj, hex2dec('0x07'), hex2dec('0x00'));  
+            setRegLCD(obj, hex2dec('0x06'), hex2dec('0xff'));  
         end % Ende noblinkLCD
 
         function displaymode = autoscrollLCD(obj,displaymode) % Nicht getestet
